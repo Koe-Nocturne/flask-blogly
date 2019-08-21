@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Create a User</h1>
-<form action="/create-user" method="POST">
+<h1>Edit User</h1>
+<form action="/users/{{id}}/edit" method="POST">
     <label for="first-name">First Name</label><input type="text" name="first-name">
     <label for="last-name">Last Name</label><input type="text" name="last-name">
     <label for="img-url">Image URL</label><input type="text" name="img-url">
-    <button class="btn btn-success">Add</button>
+    <button class="btn btn-outline-info">Cancel</button>
+    <button class="btn btn-success">Save</button>
 </form>
 
 {% endblock %}

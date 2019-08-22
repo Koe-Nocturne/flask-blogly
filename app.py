@@ -108,6 +108,7 @@ def show_form_post(id):
 
     return render_template("createpost.html", id=id)
 
+
 @app.route("/users/<int:id>/posts/new", methods=["POST"])
 def create_post(id):
     """ verifies and adds post to database """
@@ -120,3 +121,17 @@ def create_post(id):
     db.session.commit()
 
     return redirect(url_for("user_page", id=id))
+
+
+@app.route("/posts/<int:id>")
+def show_post(id):
+    """ Show the post """
+    post = (db.session.query(Post.title,
+                             Post.id,
+                             Post.content, User.id,
+                             User.first_name,
+                             User.last_name)
+            .join(User).filter(Post.id == id))
+    # post = postall.filter(Post.id == id)
+    # raise
+    return render_template("post.html", post=post)

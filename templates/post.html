@@ -1,6 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
-
-
+<h1>{{post[0][0]}}</h1>
+<br>
+<p>{{post[0][2]}}</p>
+<br>
+<p>by {{post[0][4]}}{{post[0][5]}}</p>
+<br>
+<button class="btn btn-outline-primary">Cancel</button>
+<form action="/posts/{{post[0][1]}}/edit"></form>
+<button class="btn btn-primary">Edit</button>
+</form>
+<form action="/posts/{{post[0][1]}}/delete">
+<button  class="btn btn-danger"> Delete</button>
+</form>
 
 {% endblock %}

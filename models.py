@@ -26,5 +26,21 @@ class User(db.Model):
 
     image_url = db.Column(db.String(250))
 
+
+class Post(db.Model):
+    """Post that users post haha"""
+
+    __tablename__ = "posts"
+
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
     
-    
+    title = db.Column(db.String(55),
+                      nullable=False)
+    content = db.Column(db.Text)
+    created_at = db.Column(db.DateTime,
+                           nullable=False)
+    creator_id = db.Column(db.Integer,
+                           db.ForeignKey('users.id'))
+    creator = db.relationship('User', backref="posts")

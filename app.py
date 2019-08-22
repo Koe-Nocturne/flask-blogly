@@ -1,8 +1,9 @@
 """Blogly application."""
 
-from flask import Flask, request, redirect, render_template, flash
+from flask import Flask, request, redirect, render_template, flash, url_for
 #from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Post
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -61,7 +62,8 @@ def create_new_redirect():
 @app.route('/users/<int:id>')
 def user_page(id):
     userp = User.query.get(id)
-    return render_template('userdetail.html', user=userp)
+    posts = Post.query.filter(Post.creator_id == id).all()
+    return render_template('userdetail.html', user=userp, posts=posts)
 
 @app.route("/users/<int:id>/edit")
 def edit_user_form(id):
@@ -99,3 +101,22 @@ def delete_user_redirect(id):
     db.session.commit()
 
     return redirect('/users')
+
+@app.route("/users/<int:id>/posts/new")
+def show_form_post(id):
+    """ Show the form so the user can input data """
+
+    return render_template("createpost.html", id=id)
+
+@app.route("/users/<int:id>/posts/new", methods=["POST"])
+def create_post(id):
+    """ verifies and adds post to database """
+    title = request.form.get("title")
+    content = request.form.get("content")
+    posttime = datetime.now()
+    post = Post(title=title, content=content, created_at=posttime, creator_id=id)
+    # raise
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(url_for("user_page", id=id))

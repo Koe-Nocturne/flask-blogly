@@ -4,13 +4,16 @@
 <br>
 <p>{{post[0][2]}}</p>
 <br>
-<p>by {{post[0][4]}}{{post[0][5]}}</p>
+<p>by {{post[0][4]}} {{post[0][5]}}</p>
 <br>
+
+<form action="/users/{{post[0][3]}}">
 <button class="btn btn-outline-primary">Cancel</button>
-<form action="/posts/{{post[0][1]}}/edit"></form>
+</form>
+<form action="/posts/{{post[0][1]}}/edit">
 <button class="btn btn-primary">Edit</button>
 </form>
-<form action="/posts/{{post[0][1]}}/delete">
+<form action="/posts/{{post[0][1]}}/delete" method="POST">
 <button  class="btn btn-danger"> Delete</button>
 </form>
 

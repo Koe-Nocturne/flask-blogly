@@ -79,7 +79,7 @@ def edit_user_redirect(id):
     firstname = request.form.get("first-name")
     lastname = request.form.get("last-name")
     imgurl = request.form.get("img-url")
-    print("last name", lastname)
+    
     
     if firstname != "":
         user.first_name = firstname
@@ -116,7 +116,7 @@ def create_post(id):
     content = request.form.get("content")
     posttime = datetime.now()
     post = Post(title=title, content=content, created_at=posttime, creator_id=id)
-    # raise
+    
     db.session.add(post)
     db.session.commit()
 
@@ -132,6 +132,37 @@ def show_post(id):
                              User.first_name,
                              User.last_name)
             .join(User).filter(Post.id == id))
-    # post = postall.filter(Post.id == id)
-    # raise
     return render_template("post.html", post=post)
+
+@app.route("/posts/<int:id>/edit")
+def show_edit_post_form(id):
+    """Show edit post form"""
+    post = Post.query.get_or_404(id)
+
+    return render_template('editpost.html', post=post)
+
+@app.route("/posts/<int:id>/edit", methods=["POST"])
+def edit_post_redirect(id):
+    """Show edit post form"""
+    post = Post.query.get_or_404(id)
+    title = request.form.get("title")
+    content = request.form.get("post-content")
+    
+    if title != "":
+        post.title = title
+    if content != "":
+        post.content = content
+    
+    db.session.add(post)
+    db.session.commit()
+
+    return redirect(url_for("show_post", id=id))
+
+@app.route("/posts/<int:id>/delete", methods=["POST"])
+def delete_post_redirect(id):
+    """redirect page after deleting post"""    
+    post = Post.query.get_or_404(id)
+    db.session.delete(post)
+    db.session.commit()
+
+    return redirect(url_for("user_page", id=post.creator_id))

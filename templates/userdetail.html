@@ -5,7 +5,7 @@
     <img class="" src="{{ user.image_url }}" alt="https://via.placeholder.com/150">
 </div>
 <h1>{{ user.first_name }} {{ user.last_name }}</h1>
-<form action="">
+<form action="/users/{{user.id}}/edit">
     <button class="btn btn-primary">Edit</button>
 </form>
 <form action="/users/{{user.id}}/delete" method="POST"><button class="btn btn-danger">Delete</button>

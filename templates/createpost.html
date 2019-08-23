@@ -10,6 +10,10 @@
     <label for="title">Title</label><input type="text" name="title" class="my-3">
     <br>
     <label for="content">Content</label><input type="text" name="content" class="my-3">
+    {% for t in tag %}
+    <input type="checkbox" name="tags" value="{{t.name}}">{{t.name}}
+    <br>
+    {% endfor %}
     <br>
     <button class="btn btn-success m-1">Add</button>
 </form>

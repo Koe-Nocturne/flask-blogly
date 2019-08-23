@@ -2,8 +2,9 @@
 
 from flask import Flask, request, redirect, render_template, flash, url_for
 #from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User, Post
+from models import db, connect_db, User, Post, Tag, PostTag
 from datetime import datetime
+import pdb
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///blogly'
@@ -105,20 +106,33 @@ def delete_user_redirect(id):
 @app.route("/users/<int:id>/posts/new")
 def show_form_post(id):
     """ Show the form so the user can input data """
-
-    return render_template("createpost.html", id=id)
+    tag = Tag.query.all()
+    return render_template("createpost.html", id=id, tag=tag)
 
 
 @app.route("/users/<int:id>/posts/new", methods=["POST"])
 def create_post(id):
     """ verifies and adds post to database """
+
     title = request.form.get("title")
     content = request.form.get("content")
+    tags = request.form.getlist("tags")
+
     posttime = datetime.now()
     post = Post(title=title, content=content, created_at=posttime, creator_id=id)
-    
+    # tagsid = Tag.query.filter(tags.name != None)
+       
     db.session.add(post)
     db.session.commit()
+    
+    import pdb; pdb.set_trace()
+    # raise
+    for tag in tags:
+        tagsid = Tag.query.filter(name == tag)
+        posttag = PostTag(post_id=post.id, tag_id=tagsid)
+        db.session.add(posttag)
+        db.session.commit()
+ 
 
     return redirect(url_for("user_page", id=id))
 
@@ -166,3 +180,31 @@ def delete_post_redirect(id):
     db.session.commit()
 
     return redirect(url_for("user_page", id=post.creator_id))
+
+@app.route("/tags")
+def display_tags():
+    """ list tags on page, yes """
+    tags = Tag.query.all()
+    return render_template("tags.html", tags=tags)
+
+
+@app.route("/tags/new")
+def show_create_tag_form():
+    """ shows form to add new tag """
+    return render_template("createtag.html")
+
+@app.route("/tags/new", methods=["POST"])
+def process_tag():
+    """ shows form to add new tag """
+    tag = request.form.get("name")
+    tagger = Tag(name=tag)
+    db.session.add(tagger)
+    db.session.commit()
+    return redirect("/tags")
+
+
+@app.route("/tags/<int:id>")
+def tag_page(id):
+    """ show the pages with the tags """
+    tag = Tag.query.get(id)
+    return render_template('tagdetail.html', tag=tag)
